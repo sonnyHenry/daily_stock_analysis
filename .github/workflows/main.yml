@@ -1,0 +1,27 @@
+name: Sync Upstream
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # 每天北京时间早上 8 点自动同步 (UTC 0:00)
+  workflow_dispatch:      # 允许你点击按钮手动同步
+
+jobs:
+  sync_with_upstream:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Sync Upstream
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.1
+        with:
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_sync_repo: ZhuLinsen/daily_stock_analysis  # 原仓库
+          upstream_sync_branch: main                          # 原仓库分支
+          target_sync_branch: main                            # 你的仓库分支
+          test_mode: false
